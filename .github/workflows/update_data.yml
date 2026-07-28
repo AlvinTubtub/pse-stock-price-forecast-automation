@@ -1,10 +1,6 @@
 name: Update PSE Market Data
 
 on:
-  # One-time test: July 28 at 9:00 PM Philippine Time (13:00 UTC)
-  schedule:
-    - cron: "0 13 28 7 *"
-
   workflow_dispatch:
     inputs:
       start_date:
@@ -15,6 +11,14 @@ on:
         description: "Optional end date override (YYYY-MM-DD)"
         required: false
         type: string
+
+  schedule:
+    # Monday-Friday, 2:00 PM Philippine Time (06:00 UTC)
+    - cron: "0 6 * * 1-5"
+    # Monday-Friday, 3:00 PM Philippine Time (07:00 UTC)
+    - cron: "0 7 * * 1-5"
+    # Monday-Friday, 4:00 PM Philippine Time (08:00 UTC)
+    - cron: "0 8 * * 1-5"
 
 permissions:
   contents: write
@@ -91,7 +95,6 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "Changes detected in data/raw/:"
             git diff --cached --stat
-          fi
 
       - name: Commit and push updated CSVs
         if: steps.changes.outputs.changed == 'true'
@@ -105,7 +108,7 @@ jobs:
 
       - name: Skip commit (no changes)
         if: steps.changes.outputs.changed == 'false'
-        run: echo "Data is already up to date — skipping commit."
+        run: echo "Data is already up to date — skipping commit to avoid an empty commit."
 
       - name: Upload pipeline log
         if: always()
