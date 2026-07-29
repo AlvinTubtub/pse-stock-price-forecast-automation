@@ -1,5 +1,8 @@
 name: Update PSE Market Data
 
+# Triggered only by the GitHub API (workflow_dispatch).
+# Scheduling is handled by Cron-job.org.
+
 on:
   workflow_dispatch:
     inputs:
@@ -12,20 +15,12 @@ on:
         required: false
         type: string
 
-  schedule:
-    # Monday-Friday, 2:00 PM Philippine Time (06:00 UTC)
-    - cron: "0 6 * * 1-5"
-    # Monday-Friday, 3:00 PM Philippine Time (07:00 UTC)
-    - cron: "0 7 * * 1-5"
-    # Monday-Friday, 4:00 PM Philippine Time (08:00 UTC)
-    - cron: "0 8 * * 1-5"
-
 permissions:
   contents: write
 
 concurrency:
   group: update-pse-data
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   update-data:
