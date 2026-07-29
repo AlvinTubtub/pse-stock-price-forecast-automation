@@ -82,7 +82,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          git add -A data/raw
+          git add -A
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No changes to data/raw/ — nothing to commit."
@@ -90,6 +90,7 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "Changes detected in data/raw/:"
             git diff --cached --stat
+          fi
 
       - name: Commit and push updated CSVs
         if: steps.changes.outputs.changed == 'true'
